@@ -20,3 +20,16 @@ model Country {
   code      String  @unique
   isCommon  Boolean
 }
+
+model Game {
+  id           String   @id @default(uuid())
+  type         String   // "public" | "private"
+  player1Id    String?
+  player2Id    String?
+  status       String   // "waiting" | "in_progress" | "finished" | "abandoned"
+  currentFlag  String?  // country name (for now)
+  flagHistory  String[] @default([])
+  tugIndex     Int      @default(3)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
