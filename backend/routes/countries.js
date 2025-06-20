@@ -6,6 +6,6 @@ import {
 
 const router = express.Router();
 
-router.get('/', getRandomCountry);
+router.get('/random', getRandomCountry);
 
 export default router;
