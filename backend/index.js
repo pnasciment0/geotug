@@ -19,10 +19,15 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 io.on('connection', (socket) => {
-  console.log('A user has connected');
+  console.log(`⚡: ${socket.id} user just connected!`);
+    socket.on('disconnect', () => {
+      console.log('🔥: A user disconnected');
+    });
 })
 
 app.use('/api/countries', countryRoutes);
+
+app.use('/api/games', gameRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
