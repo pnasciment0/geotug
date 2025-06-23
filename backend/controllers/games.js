@@ -2,11 +2,12 @@
 
  export const startGame = async (req, res) => {
     try {
-        const newGame = prisma.game.create({
+        const newGame = await prisma.game.create({
             data: {
                 id: crypto.randomUUID(),
                 player1Id: req.body.playerId,
-                status: 'waiting'
+                status: 'waiting',
+                type: 'private'
             }
         })
         res.json({ gameId: newGame.id });
