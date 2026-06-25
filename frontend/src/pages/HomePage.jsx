@@ -25,11 +25,13 @@ function HomePage({ buttonClicked, setButtonClicked }) {
           </button>
             {buttonClicked && (
               <div className="create-join-wrapper">
-                <Link to="/CreateGame">
+                <Link to="/createGame">
                     <button>Create Game</button>
                 </Link>
-                <button type="button">Join Game</button>
-              </div>
+                <Link to="/joinGame">
+                  <button type="button">Join Game</button>
+                </Link>
+                </div>
             )}
         </div>
         

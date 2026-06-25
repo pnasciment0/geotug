@@ -5,6 +5,7 @@ import http from 'http';
 import { Server } from 'socket.io';
 import countryRoutes from './routes/countries.js';
 import gameRoutes from './routes/games.js';
+import registerGameSocketHandlers from './lib/sockets/gameSockets.js';
 
 dotenv.config();
 
@@ -26,9 +27,7 @@ const io = new Server(server, {
 io.on('connection', (socket) => {
   console.log(`⚡: ${socket.id} user just connected!`);
 
-  socket.on('joinGameRoom', (data) => {
-    console.log(`🕹️ New player joined game room. Data:`, data);
-  });
+  registerGameSocketHandlers(socket, io);
 
   socket.on('disconnect', () => {
     console.log('🔥: A user disconnected');

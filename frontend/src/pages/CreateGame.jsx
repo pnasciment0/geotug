@@ -1,27 +1,24 @@
  import { Link } from 'react-router-dom';
  import { socket } from '../utils/socket';
  import { useState } from 'react';
+ import { apiCreate } from '../utils/api';
+ import { useNavigate } from 'react-router-dom';
 
 function CreateGame() {
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const playerId = crypto.randomUUID();
 
     const handleCreateGame = async () => {
         setLoading(true);
         try {
-            const res = await fetch('http://localhost:4000/api/games', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ playerId })
-            })
+            const createdGame = await apiCreate('http://localhost:4000/api/games', { playerId });
 
-            const data = await res.json();
-            console.log(data);
+            console.log(createdGame);
 
-            if (data.gameId) {
-                if (!socket.connected) socket.connect();
-
-                socket.emit('joinGameRoom', { gameId: data.gameId, playerId });
+            if (createdGame.gameId) {
+                // navigate(`/game/${createdGame.gameId}`, { state: { playerId } });
+                navigate(`/game/${createdGame.gameId}?playerId=${playerId}&role=player1`);
             }
            
         } catch (error) {
@@ -44,4 +41,4 @@ function CreateGame() {
     )
 }
 
-export default CreateGame
+export default CreateGame;
