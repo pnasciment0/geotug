@@ -27,9 +27,9 @@ model Game {
   player1Id    String?
   player2Id    String?
   status       String   // "waiting" | "in_progress" | "finished" | "abandoned"
-  currentFlag  String?  // country name (for now)
+  currentFlag  String?  // country code (cca2, lowercase)
   flagHistory  String[] @default([])
-  tugIndex     Int      @default(3)
+  tugIndex     Float    @default(0) // rope position, -3 (player2 wins) .. +3 (player1 wins)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }

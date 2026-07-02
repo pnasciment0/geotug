@@ -6,6 +6,7 @@ import { Server } from 'socket.io';
 import countryRoutes from './routes/countries.js';
 import gameRoutes from './routes/games.js';
 import registerGameSocketHandlers from './lib/sockets/gameSockets.js';
+import { EVENTS } from './lib/constants.js';
 
 dotenv.config();
 
@@ -24,12 +25,12 @@ const io = new Server(server, {
   }
 });
 
-io.on('connection', (socket) => {
+io.on(EVENTS.CONNECTION, (socket) => {
   console.log(`⚡: ${socket.id} user just connected!`);
 
   registerGameSocketHandlers(socket, io);
 
-  socket.on('disconnect', () => {
+  socket.on(EVENTS.DISCONNECT, () => {
     console.log('🔥: A user disconnected');
   });
 })

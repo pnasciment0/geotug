@@ -1,32 +1,29 @@
- import { Link } from 'react-router-dom';
- import { socket } from '../utils/socket';
- import { useState } from 'react';
- import { apiCreate } from '../utils/api';
- import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { createGame } from '../utils/api';
+import { createPlayerId, storePlayerId } from '../utils/playerIdentity';
 
 function CreateGame() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
-    const playerId = crypto.randomUUID();
 
     const handleCreateGame = async () => {
         setLoading(true);
         try {
-            const createdGame = await apiCreate('http://localhost:4000/api/games', { playerId });
-
-            console.log(createdGame);
+            const playerId = createPlayerId();
+            const createdGame = await createGame(playerId);
 
             if (createdGame.gameId) {
-                // navigate(`/game/${createdGame.gameId}`, { state: { playerId } });
-                navigate(`/game/${createdGame.gameId}?playerId=${playerId}&role=player1`);
+                // Persist identity on the device so the shared link stays clean.
+                storePlayerId(createdGame.gameId, playerId);
+                navigate(`/game/${createdGame.gameId}`);
             }
-           
         } catch (error) {
             console.log('Create game error:', error);
         } finally {
             setLoading(false);
         }
-    }
+    };
 
     return (
         <>
@@ -38,7 +35,7 @@ function CreateGame() {
                 <button>Cancel</button>
             </Link>
         </>
-    )
+    );
 }
 
 export default CreateGame;

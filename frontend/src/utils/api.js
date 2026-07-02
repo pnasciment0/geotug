@@ -1,30 +1,23 @@
-export const apiCreate = async (url, bodyData) => {
-    const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bodyData)
-    })
+import { API_BASE_URL } from './config';
 
-    const data = await res.json();
-    return data;
+// Low-level JSON fetch. Returns the parsed body (which may contain `{ error }`).
+async function request(path, { method = 'GET', body } = {}) {
+    const res = await fetch(`${API_BASE_URL}${path}`, {
+        method,
+        headers: body ? { 'Content-Type': 'application/json' } : undefined,
+        body: body ? JSON.stringify(body) : undefined,
+    });
+    return res.json();
 }
 
-export const apiRead = async (url) => {
-    const res = await fetch(url, {
-        method: 'GET',
-    })
+// --- Games API -----------------------------------------------------------
+export const createGame = (playerId) =>
+    request('/api/games', { method: 'POST', body: { playerId } });
 
-    const data = await res.json();
-    return data;
-}
+export const fetchGame = (gameId) => request(`/api/games/${gameId}`);
 
-export const apiUpdate = async (url, bodyData) => {
-    const res = await fetch(url, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bodyData)
-    })
+export const joinGame = (gameId, playerId) =>
+    request(`/api/games/join/${gameId}`, { method: 'PUT', body: { playerId } });
 
-    const data = await res.json();
-    return data;
-}
+export const abandonGame = (gameId) =>
+    request(`/api/games/abandon/${gameId}`, { method: 'PUT' });
