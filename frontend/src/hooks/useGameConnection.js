@@ -66,6 +66,9 @@ export function useGameConnection(gameId) {
                 if (cancelled) return;
                 if (game.error) {
                     console.log('Error fetching game data:', game.error);
+                    // Link points to a game that was cancelled or never existed.
+                    setRole(ROLES.SPECTATOR);
+                    setPhase(PHASES.NOT_FOUND);
                     return;
                 }
 

@@ -63,6 +63,34 @@
     }
  }
 
+ // Backing out before a game has really begun. If the creator is still alone in
+ // the waiting room, the game is a non-event, so we delete the row outright. If a
+ // Player 2 slipped in (race), we fall back to abandoning so the other player and
+ // any shared state are handled the normal way rather than vanishing.
+ export const cancelGame = async (req, res) => {
+    try {
+        const game = await prisma.game.findUnique({
+            where: { id: req.params.id },
+        });
+
+        if (!game) return res.status(404).json({ error: 'Game not found' });
+
+        if (game.status === GAME_STATUS.WAITING && !game.player2Id) {
+            await prisma.game.delete({ where: { id: game.id } });
+            return res.json({ deleted: true });
+        }
+
+        const updatedGame = await prisma.game.update({
+            where: { id: game.id },
+            data: { status: GAME_STATUS.ABANDONED },
+        });
+        res.json({ deleted: false, ...updatedGame });
+    } catch (error) {
+        console.log('Error cancelling game:', error);
+        res.status(500).json({ error: `Server Error: ${error}` });
+    }
+ }
+
  export const abandonGame = async (req, res) => {
     try {
         const game = await prisma.game.findUnique({

@@ -9,6 +9,7 @@ export const PHASES = {
     PLAYING: 'playing',       // flag shown, guessing open
     INTERMISSION: 'intermission', // between rounds, showing the result
     OVER: 'over',             // game finished
+    NOT_FOUND: 'not_found',   // link points to a game that was cancelled/never existed
 };
 
 export const ROLES = {

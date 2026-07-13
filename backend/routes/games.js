@@ -4,7 +4,8 @@ import {
     startGame,
     getGameById,
     joinGame,
-    abandonGame
+    abandonGame,
+    cancelGame
 } from '../controllers/games.js';
 
 const router = express.Router();
@@ -16,6 +17,8 @@ router.get('/:id', getGameById);
 router.put('/join/:id', joinGame);
 
 router.put('/abandon/:id', abandonGame);
+
+router.delete('/:id', cancelGame);
 
 
 export default router;

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useGameConnection } from '../hooks/useGameConnection';
-import { abandonGame } from '../utils/api';
+import { abandonGame, cancelGame } from '../utils/api';
 import { PHASES, isPlayer, roleLabel, showsRope } from '../utils/constants';
 import WaitingRoom from '../components/game/WaitingRoom';
 import Lobby from '../components/game/Lobby';
@@ -32,13 +32,37 @@ function GamePage() {
         }
     };
 
+    // Backing out of the waiting room before anyone joins: nothing has happened
+    // yet, so the server just discards the game and we return home.
+    const handleCancelWaiting = async () => {
+        try {
+            await cancelGame(gameId);
+        } catch (error) {
+            console.log('Error cancelling game:', error);
+        } finally {
+            navigate('/');
+        }
+    };
+
     return (
         <>
             <h1>GeoTug</h1>
 
             {isPlayer(role) && <p style={{ color: '#666' }}>You are {roleLabel(role)}</p>}
 
-            {phase === PHASES.WAITING && <WaitingRoom gameId={gameId} />}
+            {phase === PHASES.NOT_FOUND && (
+                <div style={{ textAlign: 'center' }}>
+                    <p>This game isn’t available anymore.</p>
+                    <p style={{ color: '#666' }}>
+                        It may have been cancelled by the host, or the link is incorrect.
+                    </p>
+                    <button onClick={() => navigate('/')}>Back to home</button>
+                </div>
+            )}
+
+            {phase === PHASES.WAITING && (
+                <WaitingRoom gameId={gameId} onCancel={handleCancelWaiting} />
+            )}
 
             {game.opponentLeft && (
                 <p style={{ color: 'darkorange' }}>

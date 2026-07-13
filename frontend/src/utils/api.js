@@ -21,3 +21,8 @@ export const joinGame = (gameId, playerId) =>
 
 export const abandonGame = (gameId) =>
     request(`/api/games/abandon/${gameId}`, { method: 'PUT' });
+
+// Back out before the game begins. Deletes the row if the creator is still
+// alone in the waiting room; otherwise the server abandons it.
+export const cancelGame = (gameId) =>
+    request(`/api/games/${gameId}`, { method: 'DELETE' });
